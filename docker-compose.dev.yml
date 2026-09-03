@@ -1,0 +1,31 @@
+# Dev-only overlay: re-publishes ports for services that are otherwise
+# internal-only in docker-compose.yml (nothing outside Docker needs them —
+# other containers already reach them by service name over the `backend`
+# network regardless of whether a port is published here).
+#
+# Load together with the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml ...
+#
+# Compose merges `ports:` lists across -f files, so this only adds entries
+# on top of docker-compose.yml — it doesn't replace anything.
+services:
+  postgres:
+    ports:
+      - "${BIND_IP:-127.0.0.1}:5432:5432"
+
+  redis:
+    ports:
+      - "${BIND_IP:-127.0.0.1}:6379:6379"
+
+  qdrant:
+    ports:
+      - "${BIND_IP:-127.0.0.1}:6333:6333"
+      - "${BIND_IP:-127.0.0.1}:6334:6334"
+
+  clickhouse:
+    ports:
+      - "${BIND_IP:-127.0.0.1}:9002:9000"
+
+  langfuse-worker:
+    ports:
+      - "${BIND_IP:-127.0.0.1}:3030:3030"

@@ -1,0 +1,22 @@
+# The FastAPI app, kept separate from docker-compose.yml (postgres, redis,
+# qdrant, minio, clickhouse, langfuse) so the API can be rebuilt/restarted
+# on every code change without touching the infra stack. Requires the infra
+# stack's `backend` network to already exist — bring that up first.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${BIND_IP:-127.0.0.1}:8000:8000"
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
+    name: backend
