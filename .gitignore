@@ -1,0 +1,52 @@
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Packaging and build artifacts
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# uv
+.uv/
+
+# Environment and local configuration
+.env
+.env.*
+!.env.example
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+
+.claude
+.neuralmind
+graphify-out/
+.mcp.json
+.python-version
+/CLAUDE.local.md.example
+
+# Synthetic corpus — generated output only; generator code + manifest stay tracked
+data/
+
+.claudeignore
