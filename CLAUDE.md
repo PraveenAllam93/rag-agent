@@ -96,19 +96,24 @@ Run `make lint && make types && make test-fast` before proposing any commit.
 ## Layout
 
 ```
-apps/api/          FastAPI app: routes, dependencies, schemas. No business logic in routes.
-services/
-  ingestion/       parse → OCR → structure → chunk → embed → index
-  retrieval/       hybrid search, fusion, reranking, evidence bundle assembly
-  agents/          LangGraph graphs and state
-  analytics/       SQL + sandboxed Python execution
-  reporting/       PDF/DOCX generation, citation validation
-tools/             LLM-callable tools. Typed in, typed out, permission-enforcing.
-domain/            models, schemas, policies. No I/O.
-evaluation/        golden sets, metric implementations, regression gate
-data/synthetic/    generated corpus + paired golden set (gitignored except manifests)
-infrastructure/    docker, terraform, k8s
+apps/
+  api/             routes/ (thin, no business logic) + main.py (app instance, router mounts)
+  dependencies/    FastAPI Depends() factories: DB session, external clients, JWT auth
+  middlewares/     ASGI middleware (RBAC enforcement, etc.)
+  models.py        SQLAlchemy ORM tables
+  schemas/         Pydantic request/response schemas, one file per area (auth, user, tenant, ...)
+  utils/           generic, stateless helpers (security.py hashing, logs.py logging) — no I/O
+  repository.py    DB-I/O classes (UserRepository, TenantRepository, ...)
 ```
+
+Flat under `apps/` while the system is API + identity/auth only (Phase 1). The
+services/ingestion, services/retrieval, services/agents, services/analytics,
+services/reporting split — each a subsystem runnable independently of the API
+process (agents via LangGraph, ingestion/eval via `make corpus`/`make eval`) —
+gets introduced starting Phase 3, not before. Likewise `tools/` (LLM-callable
+tools), `evaluation/` (golden sets, metrics, regression gate), and
+`data/synthetic/` (generated corpus) arrive with the phases that need them.
+`infrastructure/` (docker, terraform, k8s) already exists.
 
 ## Current phase
 

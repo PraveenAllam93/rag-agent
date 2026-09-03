@@ -1,7 +1,8 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.orm import declarative_base
 
-from .postgres_db import base
+base = declarative_base()
 
 
 class UserModel(base):

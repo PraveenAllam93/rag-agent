@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .models import RoleModel, TenantModel, UserModel, UserTenantRoleModel
 from .schemas import TenantCreateSchema, UserCreateSchema, UserUpdateSchema
-from .security import hash_password
+from .utils.security import hash_password
 
 
 class UserRepository:
@@ -98,7 +98,10 @@ class TenantRepository:
         salted hash can't be matched with SQL equality."""
         result = await self.db.execute(
             select(TenantModel.tenant_id, TenantModel.name, UserTenantRoleModel.role_id)
-            .join(UserTenantRoleModel, TenantModel.tenant_id == UserTenantRoleModel.tenant_id)
+            .join(
+                UserTenantRoleModel,
+                TenantModel.tenant_id == UserTenantRoleModel.tenant_id,
+            )
             .where(UserTenantRoleModel.user_id == user_id)
         )
         return result.all()
